@@ -6,10 +6,10 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Renci.SshNet;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace ROV_UI
 {
@@ -20,14 +20,13 @@ namespace ROV_UI
         public string username;
         public string password;
         public string command;
-        public SshClient RaspiSSHClient;
-        public SftpClient RaspiSFTPClient;
-
+        public SshClient RaspiSSHClient = null;
+        public SftpClient RaspiSFTPClient = null;
+        public ShellStream shellStream;
         public Configuration_Form Konfigurasyon_Formu;
         public textbox_form yol_degis;
-
         public string raspi_dosya_yolu;
-
+        public TextBox EvrenselTerminal;
         public Main()
         {
             InitializeComponent();
@@ -65,6 +64,12 @@ namespace ROV_UI
                 string deger = "&" + "/home/raspberrypi/Desktop";
                 File.WriteAllText(dosya_yolu, deger);
             }
+            EvrenselTerminal = terminal;
+
+            desktop_listesi.Enabled = false;
+            dosya_gonder.Enabled = false;
+            baglantiyi_kes.Enabled = false;
+            komutu_calistir.Enabled = false;
         }
 
         private void baglan_Click(object sender, EventArgs e)
@@ -87,9 +92,19 @@ namespace ROV_UI
                 if (RaspiSSHClient.IsConnected && RaspiSSHClient.IsConnected)
                 {
                     pictureBox2.Image = global::ROV_UI.Properties.Resources.greentick;
+
+                    desktop_listesi.Enabled = true;
+                    dosya_gonder.Enabled = true;
+                    baglantiyi_kes.Enabled = true;
+                    komutu_calistir.Enabled = true;
+                    baglan.Enabled = false;
                 }
                 else
                 {
+                    pictureBox2.Image = global::ROV_UI.Properties.Resources.rederror;
+                    desktop_listesi.Enabled = false;
+                    dosya_gonder.Enabled = false;
+                    baglantiyi_kes.Enabled = false;
                     MessageBox.Show("Bağlanamadı! \n");
                 }
             }
@@ -104,6 +119,14 @@ namespace ROV_UI
             RaspiSSHClient.Disconnect();
             RaspiSFTPClient.Disconnect();
             pictureBox2.Image = global::ROV_UI.Properties.Resources.rederror;
+            RaspiSSHClient = null;
+            RaspiSFTPClient = null;
+
+            desktop_listesi.Enabled = false;
+            dosya_gonder.Enabled = false;
+            baglantiyi_kes.Enabled = false;
+            komutu_calistir.Enabled=false;
+            baglan.Enabled = true;
         }
 
         private void dosya_gonder_Click(object sender, EventArgs e)
@@ -122,7 +145,7 @@ namespace ROV_UI
                         using (FileStream fs = new FileStream(file, FileMode.Open))
                         {
                             RaspiSFTPClient.ChangeDirectory(raspi_dosya_yolu);RaspiSFTPClient.UploadFile(fs, Path.GetFileName(file));
-                            terminal.Text += file + " yüklendi." + Environment.NewLine;
+                            terminal.Text += file + " dosyası;" + Environment.NewLine + raspi_dosya_yolu + " adresine yüklendi" + Environment.NewLine;
                         }
                     }
                 }
@@ -144,8 +167,21 @@ namespace ROV_UI
             try
             {
                 command = komut_satiri.Text;
-                var commandResult = RaspiSSHClient.RunCommand(command);
-                terminal.Text += Convert.ToString(commandResult.Result) + Environment.NewLine;
+                if (RaspiSSHClient.IsConnected)
+                {
+                    shellStream = RaspiSSHClient.CreateShellStream("xterm", 80, 24, 800, 600, 1024);
+                    shellStream.WriteLine(command);
+                    string output = shellStream.ReadLine(TimeSpan.FromSeconds(1));
+                    while (output != "bitti")
+                    {
+                        output = shellStream.ReadLine(TimeSpan.FromSeconds(1));
+                        if (!string.IsNullOrEmpty(output))
+                        {
+                            terminal.AppendText(output + Environment.NewLine);                            
+                        }
+                    }
+                }
+
             }
             catch (Exception ex)
             {
@@ -196,7 +232,7 @@ namespace ROV_UI
 
         private void desktop_listesi_Click(object sender, EventArgs e)
         {
-            var commandResult = RaspiSSHClient.RunCommand("ls -l Desktop");
+            var commandResult = RaspiSSHClient.RunCommand("ls /home/raspberrypi/Desktop");
             terminal.Text += Convert.ToString(commandResult.Result) + Environment.NewLine;
         }
     }

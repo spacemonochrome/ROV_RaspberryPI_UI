@@ -17,7 +17,6 @@ namespace ROV_UI
             InitializeComponent();
             Task.Delay(5000).ContinueWith(t => this.Close(), TaskScheduler.FromCurrentSynchronizationContext());
         }
-
         private void SplashScreen_Load(object sender, EventArgs e)
         {
             

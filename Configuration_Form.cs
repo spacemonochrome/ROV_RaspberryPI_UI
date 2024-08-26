@@ -15,12 +15,6 @@ namespace ROV_UI
     public partial class Configuration_Form : Form
     {
         public Main AnaEkran;
-        public string host;
-        public string username;
-        public string password;
-        public string command;
-        public SshClient RaspiSSHClient;
-        public SftpClient RaspiSFTPClient;
 
         public ComboBox[] ComboBoxlerMotor;
         public ComboBox[] ComboBoxlerYon;
@@ -39,11 +33,6 @@ namespace ROV_UI
             harfler = new Label[] { labelA, labelB, labelC, labelD, labelE, labelF, labelG, labelH, labelI, labelJ,};
 
             AnaEkran = MainDB;
-            host = AnaEkran.host;
-            username = AnaEkran.username;
-            password = AnaEkran.password;
-            RaspiSFTPClient = AnaEkran.RaspiSFTPClient;
-            RaspiSSHClient = AnaEkran.RaspiSSHClient;
 
             string dosya_dizini = AppDomain.CurrentDomain.BaseDirectory.ToString() + "rov_log/mpu6050.txt";
             if (File.Exists(dosya_dizini) == true){
@@ -78,7 +67,18 @@ namespace ROV_UI
             for (int i = 0; i < ComboBoxlerYon.Length; i++) { ComboBoxlerYon[i].SelectedIndexChanged += new System.EventHandler(this.MotorYonSelected); }
             comboBox_Test_Motoru.SelectedIndex = 0;
             comboBox_Hareket_Tanimla.SelectedIndex = 9;
-            comboBox_MPU6050_Ref.SelectedIndex = 0;            
+            comboBox_MPU6050_Ref.SelectedIndex = 0;
+
+            if (AnaEkran.RaspiSSHClient != null)
+            {
+                Log_Gonder.Enabled = true;
+                Test_Buton.Enabled = true;
+            }
+            else
+            {
+                Log_Gonder.Enabled = false;
+                Test_Buton.Enabled = false;
+            }
         }
 
         private void Configuration_Form_Load(object sender, EventArgs e)
@@ -94,6 +94,30 @@ namespace ROV_UI
         private void Button_Log_Gonder(object sender, EventArgs e)
         {
             // raspberry pi için konfigürasyonları göndercek
+            try
+            {
+                OpenFileDialog dialog = new OpenFileDialog();
+                dialog.Multiselect = true;
+                dialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+                dialog.RestoreDirectory = true;
+                dialog.Multiselect = true;
+                if (dialog.ShowDialog() == DialogResult.OK)
+                {
+                    foreach (String file in dialog.FileNames)
+                    {
+                        using (FileStream fs = new FileStream(file, FileMode.Open))
+                        {
+                            AnaEkran.RaspiSFTPClient.ChangeDirectory(AnaEkran.raspi_dosya_yolu);
+                            AnaEkran.RaspiSFTPClient.UploadFile(fs, Path.GetFileName(file));
+                            AnaEkran.EvrenselTerminal.Text += file + " dosyası;" + Environment.NewLine + AnaEkran.raspi_dosya_yolu + " adresine yüklendi" + Environment.NewLine; 
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex + "");
+            }
         }
 
         private void Conf_Ice_Aktar(object sender, EventArgs e)
@@ -115,10 +139,21 @@ namespace ROV_UI
 
         private void Button_Log_Goster(object sender, EventArgs e)
         {
+            string ilksatir = "";
+            for (int i = 0; i < motorKonum.Length; i++)
+            {
+                ilksatir = ilksatir + "&" + motorKonum[i];
+            }
+            ilksatir = "!" + ilksatir + "&" + "!";
+            bellek[0] = ilksatir;
+            for (int i = 1; i < bellek.Length; i++)
+            {
+                bellek[i] = motorYon[i - 1];
+            }
             duzyazi = "";
             for (int i = 0; i < bellek.Length; i++)
             {
-                duzyazi = duzyazi + bellek[i] + "\n";
+                duzyazi = duzyazi + bellek[i] + Environment.NewLine;
             }
             LogGosterici gosterici = new LogGosterici(duzyazi);
             gosterici.ShowDialog();
@@ -131,8 +166,9 @@ namespace ROV_UI
             {
                 ilksatir = ilksatir + "&" + motorKonum[i];
             }
-            ilksatir = "?" + ilksatir + "&" + "?";
+            ilksatir = "!" + ilksatir + "&" + "!";
             bellek[0] = ilksatir;
+
             for (int i = 1;i < bellek.Length;i++)
             {
                 bellek[i] = motorYon[i - 1];
@@ -140,8 +176,8 @@ namespace ROV_UI
             duzyazi = "";
             for (int i = 0; i < bellek.Length; i++)
             {
-                duzyazi = duzyazi + bellek[i] + "\n";
-            }            
+                duzyazi = duzyazi + bellek[i] + Environment.NewLine;
+            }
             string dosya_yolu = AppDomain.CurrentDomain.BaseDirectory + "rov_log/Motor_Conf.txt";
             File.WriteAllText(dosya_yolu, duzyazi);
         }
