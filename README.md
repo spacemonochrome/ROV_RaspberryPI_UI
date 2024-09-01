@@ -1,5 +1,6 @@
 # ROV_RaspberryPI_UI
- 
-![1](https://github.com/user-attachments/assets/bc16b5ce-4f79-4e6c-b4f4-c75585651b82)
 
-![2](https://github.com/user-attachments/assets/43e5061b-1e87-4837-bdb9-0547da0942b5)
+ ![image](https://github.com/user-attachments/assets/208e702e-c523-4223-a958-f77041a3afb7)
+
+![image](https://github.com/user-attachments/assets/0e05e9af-a4c1-4f6c-990a-1793f9409be7)
+
