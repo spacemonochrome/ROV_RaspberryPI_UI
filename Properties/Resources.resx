@@ -124,4 +124,10 @@
   <data name="rederror" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\rederror.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="TestMotor" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Motor_Testi\TestMotor.py;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="Test_Gonder" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Motor_Testi\Test_Gonder.py;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
 </root>

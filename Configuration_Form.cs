@@ -5,6 +5,8 @@ using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -22,25 +24,25 @@ namespace ROV_UI
 
         string duzyazi = "";
         public string[] bellek = new string[11];
-        public string[] motorYon = new string[10] {"", "" , "" , "" , "" , "" , "" , "" , "" , "" };
+        public string[] motorYon = new string[10] { "", "", "", "", "", "", "", "", "", "" };
         public string[] motorKonum = new string[7];
 
         public Configuration_Form(Main MainDB)
         {
             InitializeComponent();
             ComboBoxlerMotor = new ComboBox[] { comboBox_Yon_M1, comboBox_Yon_M2, comboBox_Yon_M3, comboBox_Yon_M4, comboBox_Yon_M5, comboBox_Yon_M6, comboBox_Yon_M7 };
-            ComboBoxlerYon = new ComboBox[] { MotorOnSol, MotorOnSag, MotorOrtaSol, MotorOrtaSag, MotorArkaSol, MotorArkaSag, MotorFirlatma};
-            harfler = new Label[] { labelA, labelB, labelC, labelD, labelE, labelF, labelG, labelH, labelI, labelJ,};
+            ComboBoxlerYon = new ComboBox[] { MotorOnSol, MotorOnSag, MotorOrtaSol, MotorOrtaSag, MotorArkaSol, MotorArkaSag, MotorFirlatma };
+            harfler = new Label[] { labelA, labelB, labelC, labelD, labelE, labelF, labelG, labelH, labelI, labelJ, };
 
             AnaEkran = MainDB;
 
             string dosya_dizini = AppDomain.CurrentDomain.BaseDirectory.ToString() + "rov_log/mpu6050.txt";
-            if (File.Exists(dosya_dizini) == true){
+            if (File.Exists(dosya_dizini) == true) {
                 string login_String = File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + "rov_log/mpu6050.txt");
                 string[] log_Split = login_String.Split('&');
                 comboBox_MPU6050_Ref.Text = log_Split[1];
             }
-            else{
+            else {
                 Directory.CreateDirectory(AppDomain.CurrentDomain.BaseDirectory + "rov_log");
                 string dosya_yolu = AppDomain.CurrentDomain.BaseDirectory + "rov_log/mpu6050.txt";
                 var ab = File.Create(dosya_yolu);
@@ -48,21 +50,21 @@ namespace ROV_UI
             }
 
             dosya_dizini = AppDomain.CurrentDomain.BaseDirectory.ToString() + "rov_log/Motor_Conf.txt";
-            if (File.Exists(dosya_dizini) == true){
+            if (File.Exists(dosya_dizini) == true) {
                 string login_String = File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + "rov_log/Motor_Conf.txt");
                 //string[] log_Split = login_String.Split('&');
                 //bilgi çekilecektir. daha kodu yazılmamıştır.
             }
-            else{
+            else {
                 Directory.CreateDirectory(AppDomain.CurrentDomain.BaseDirectory + "rov_log");
                 string dosya_yolu = AppDomain.CurrentDomain.BaseDirectory + "rov_log/Motor_Conf.txt";
                 var ab = File.Create(dosya_yolu);
                 ab.Close();
             }
             for (int j = 0; j < ComboBoxlerMotor.Length; j++) { ComboBoxlerMotor[j].Enabled = false; }
-            for (int i = 0; i < ComboBoxlerMotor.Length; i++){ComboBoxlerMotor[i].SelectedIndex = 0;}
-            for (int i = 0; i < ComboBoxlerYon.Length; i++){ComboBoxlerYon[i].SelectedIndex = 0;}
-            for (int i = 0; i < ComboBoxlerYon.Length; i++){ComboBoxlerYon[i].SelectedIndexChanged += new System.EventHandler(this.MotorKonumSelected);}
+            for (int i = 0; i < ComboBoxlerMotor.Length; i++) { ComboBoxlerMotor[i].SelectedIndex = 0; }
+            for (int i = 0; i < ComboBoxlerYon.Length; i++) { ComboBoxlerYon[i].SelectedIndex = 0; }
+            for (int i = 0; i < ComboBoxlerYon.Length; i++) { ComboBoxlerYon[i].SelectedIndexChanged += new System.EventHandler(this.MotorKonumSelected); }
             for (int i = 0; i < harfler.Length; i++) { harfler[i].ForeColor = Color.Red; }
             for (int i = 0; i < ComboBoxlerYon.Length; i++) { ComboBoxlerYon[i].SelectedIndexChanged += new System.EventHandler(this.MotorYonSelected); }
             comboBox_Test_Motoru.SelectedIndex = 0;
@@ -81,19 +83,113 @@ namespace ROV_UI
             }
         }
 
+        private void Button_Kaydi_Sil(object sender, EventArgs e)
+        {
+            motorYon[comboBox_Hareket_Tanimla.SelectedIndex] = "";
+            harfler[comboBox_Hareket_Tanimla.SelectedIndex].ForeColor = Color.Red;
+        }
+
         private void Configuration_Form_Load(object sender, EventArgs e)
         {
 
         }
-                
+
         private void Test_Buton_Click(object sender, EventArgs e)
         {
-            // seçili motorun testi yapılacaktır.
+            Test_Buton.Enabled = false;
+            byte[] fileData = global::ROV_UI.Properties.Resources.Test_Gonder;
+            using (MemoryStream memoryStream = new MemoryStream(fileData))
+            {
+                try
+                {
+                    AnaEkran.RaspiSFTPClient.UploadFile(memoryStream, AnaEkran.raspi_dosya_yolu + "/Test_Gonder.py");
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Dosya gönderilemedi: {ex.Message}");
+                    Test_Buton.Enabled = true;
+                }
+            }
+
+            try
+            {
+                fileData = global::ROV_UI.Properties.Resources.TestMotor;
+                string tempFilePath = Path.GetTempFileName();
+                File.WriteAllBytes(tempFilePath, fileData);
+                string textToAdd = "GelenDeger = [" + MotorDeger(comboBox_Test_Motoru.SelectedIndex) + "]"; 
+                File.WriteAllText(tempFilePath, textToAdd, Encoding.UTF8);
+                using (FileStream fs = new FileStream(tempFilePath, FileMode.Open))
+                {
+                    AnaEkran.RaspiSFTPClient.UploadFile(fs, AnaEkran.raspi_dosya_yolu + "/TestMotor.py");
+                }
+                File.Delete(tempFilePath);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Dosya gönderilemedi: {ex.Message}");
+                Test_Buton.Enabled = true;
+            }
+
+            try
+            {
+                AnaEkran.shellStream.WriteLine("python " + AnaEkran.raspi_dosya_yolu + "/Test_Gonder.py");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex + "");
+                Test_Buton.Enabled = true;
+            }
+        }
+
+        private async void StartRealTimeDataStreamMotorTest(string command)
+        {
+            await Task.Run(() =>
+            {
+                AnaEkran.shellStream.WriteLine(command);
+                string output = AnaEkran.shellStream.ReadLine();
+                while (output != "bitti")
+                {
+                    output = AnaEkran.shellStream.ReadLine();
+                    if (!string.IsNullOrEmpty(output))
+                    {
+                        Invoke(new Action(() =>
+                        {
+                            AnaEkran.EvrenselTerminal.AppendText(output + Environment.NewLine);
+                        }));
+                    }
+                }
+                
+            });
+            Test_Buton.Enabled = true;
+        }
+
+        string MotorDeger(int a)
+        {
+            switch (a)
+            {
+                case 0:
+                    return "125,125,125,125,125,125,125";
+                case 1:
+                    return "225,125,125,125,125,125,125";
+                case 2:
+                    return "125,225,125,125,125,125,125";
+                case 3:
+                    return "125,125,225,125,125,125,125";
+                case 4:
+                    return "125,125,125,225,125,125,125";
+                case 5:
+                    return "125,125,125,125,225,125,125";
+                case 6:
+                    return "125,125,125,125,125,225,125";
+                case 7:
+                    return "125,125,125,125,125,125,225";
+                default:
+                    return "125,125,125,125,125,125,125";
+            }
         }
 
         private void Button_Log_Gonder(object sender, EventArgs e)
         {
-            // raspberry pi için konfigürasyonları göndercek
             try
             {
                 OpenFileDialog dialog = new OpenFileDialog();
@@ -208,6 +304,7 @@ namespace ROV_UI
 
                     comboBox_Hareket_Tanimla.Enabled = true;
                     Yon_Hareket_Kaydet.Enabled = true;
+                    Buton_Kaydi_Sil.Enabled = true;
                 }
                 else
                 {
@@ -244,7 +341,7 @@ namespace ROV_UI
                     {
                         MessageBox.Show($"{currentComboBox.SelectedItem} zaten başka bir ComboBox'ta seçili.", "Uyarı", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     }
-                    currentComboBox.SelectedIndex = 0; // Seçimi iptal et
+                    currentComboBox.SelectedIndex = 0;
                     break;
                 }
             }

@@ -79,5 +79,25 @@ namespace ROV_UI.Properties {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
+        
+        /// <summary>
+        ///   System.Byte[] türünde yerelleştirilmiş bir kaynak arar.
+        /// </summary>
+        internal static byte[] Test_Gonder {
+            get {
+                object obj = ResourceManager.GetObject("Test_Gonder", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   System.Byte[] türünde yerelleştirilmiş bir kaynak arar.
+        /// </summary>
+        internal static byte[] TestMotor {
+            get {
+                object obj = ResourceManager.GetObject("TestMotor", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
     }
 }

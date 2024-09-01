@@ -3,11 +3,11 @@
   "WorkspaceRootPath": "C:\\Users\\hasan\\Desktop\\ROV_TF\\ROV_UI\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{0460C84A-109B-4F85-9C9A-0AD9255067BD}|ROV_UI.csproj|C:\\Users\\hasan\\Desktop\\ROV_TF\\ROV_UI\\main.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{0460C84A-109B-4F85-9C9A-0AD9255067BD}|ROV_UI.csproj|solutionrelative:main.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{0460C84A-109B-4F85-9C9A-0AD9255067BD}|ROV_UI.csproj|C:\\Users\\hasan\\Desktop\\ROV_TF\\ROV_UI\\main.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{0460C84A-109B-4F85-9C9A-0AD9255067BD}|ROV_UI.csproj|solutionrelative:main.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{0460C84A-109B-4F85-9C9A-0AD9255067BD}|ROV_UI.csproj|c:\\users\\hasan\\desktop\\rov_tf\\rov_ui\\configuration_form.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{0460C84A-109B-4F85-9C9A-0AD9255067BD}|ROV_UI.csproj|C:\\Users\\hasan\\Desktop\\ROV_TF\\ROV_UI\\configuration_form.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{0460C84A-109B-4F85-9C9A-0AD9255067BD}|ROV_UI.csproj|solutionrelative:configuration_form.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
@@ -15,8 +15,12 @@
       "RelativeMoniker": "D:0:0:{0460C84A-109B-4F85-9C9A-0AD9255067BD}|ROV_UI.csproj|solutionrelative:configuration_form.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{0460C84A-109B-4F85-9C9A-0AD9255067BD}|ROV_UI.csproj|C:\\Users\\hasan\\Desktop\\ROV_TF\\ROV_UI\\main.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
-      "RelativeMoniker": "D:0:0:{0460C84A-109B-4F85-9C9A-0AD9255067BD}|ROV_UI.csproj|solutionrelative:main.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+      "AbsoluteMoniker": "D:0:0:{0460C84A-109B-4F85-9C9A-0AD9255067BD}|ROV_UI.csproj|c:\\users\\hasan\\desktop\\rov_tf\\rov_ui\\main.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0460C84A-109B-4F85-9C9A-0AD9255067BD}|ROV_UI.csproj|solutionrelative:main.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0460C84A-109B-4F85-9C9A-0AD9255067BD}|ROV_UI.csproj|c:\\users\\hasan\\desktop\\rov_tf\\rov_ui\\motor_testi\\test_gonder.py||{3B902123-F8A7-4915-9F01-361F908088D0}",
+      "RelativeMoniker": "D:0:0:{0460C84A-109B-4F85-9C9A-0AD9255067BD}|ROV_UI.csproj|solutionrelative:motor_testi\\test_gonder.py||{3B902123-F8A7-4915-9F01-361F908088D0}"
     }
   ],
   "DocumentGroupContainers": [
@@ -26,43 +30,19 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 2,
+          "SelectedChildIndex": 4,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "Configuration_Form.cs [Tasar\u0131m]",
-              "DocumentMoniker": "C:\\Users\\hasan\\Desktop\\ROV_TF\\ROV_UI\\Configuration_Form.cs",
-              "RelativeDocumentMoniker": "Configuration_Form.cs",
-              "ToolTip": "C:\\Users\\hasan\\Desktop\\ROV_TF\\ROV_UI\\Configuration_Form.cs [Tasar\u0131m]",
-              "RelativeToolTip": "Configuration_Form.cs [Tasar\u0131m]",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-08-26T13:40:17.578Z",
-              "EditorCaption": " [Tasar\u0131m]"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "Main.cs [Tasar\u0131m]",
-              "DocumentMoniker": "C:\\Users\\hasan\\Desktop\\ROV_TF\\ROV_UI\\Main.cs",
-              "RelativeDocumentMoniker": "Main.cs",
-              "ToolTip": "C:\\Users\\hasan\\Desktop\\ROV_TF\\ROV_UI\\Main.cs [Tasar\u0131m]",
-              "RelativeToolTip": "Main.cs [Tasar\u0131m]",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-08-26T13:02:39.299Z",
-              "EditorCaption": " [Tasar\u0131m]"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "Main.cs",
-              "DocumentMoniker": "C:\\Users\\hasan\\Desktop\\ROV_TF\\ROV_UI\\Main.cs",
-              "RelativeDocumentMoniker": "Main.cs",
-              "ToolTip": "C:\\Users\\hasan\\Desktop\\ROV_TF\\ROV_UI\\Main.cs",
-              "RelativeToolTip": "Main.cs",
-              "ViewState": "AgIAACYAAAAAAAAAAAAIwDcAAAA9AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-08-26T12:06:37.813Z",
+              "DocumentIndex": 4,
+              "Title": "Test_Gonder.py",
+              "DocumentMoniker": "C:\\Users\\hasan\\Desktop\\ROV_TF\\ROV_UI\\Motor_Testi\\Test_Gonder.py",
+              "RelativeDocumentMoniker": "Motor_Testi\\Test_Gonder.py",
+              "ToolTip": "C:\\Users\\hasan\\Desktop\\ROV_TF\\ROV_UI\\Motor_Testi\\Test_Gonder.py",
+              "RelativeToolTip": "Motor_Testi\\Test_Gonder.py",
+              "ViewState": "AgIAAEgAAAAAAAAAAAAAAFgAAAAaAAAAAAAAAA==",
+              "Icon": "00000000-0000-0000-0000-000000000000.000000|iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAHeSURBVDhPpVMxa1NRFP7ebZLSlgaltNpSVCySRUxL0NAh4FJpHWpxcZAUBEPG/AKHDsVBN5eGrCnoYKCDoDiUCKKBjtZBUZtJ2ojYJr40ue\u002B\u002B47k3VzD0hQr94OOed8853/k47z2cCETk2NAgk8mQDQMhhFjK5/Mb9vEotIDruoEsFovEzVvZbPaWLTcQ9uxCpVLp4l\u002Bk0\u002BlEPB5/wIPm7RVC9uxCMpm0UTdKpRKi0WiCQy3wUt8FCvw7VSNxbRapG4voDwucGgyjXC7bzH84ePt1HysbH/GhWoNstzA1OoSFhZuxQqFg8sfu4FutAd\u002BT8KSEYm7v7GJ0YnLClgYLaAcjU9N4Vx9Dda8OBz7OjwywSNsIXY39vEL7TxWpxv2eO3hWHUZ19xc8ti25UdvXzdpNWH0BDj8JiLOrPXfweOu9mRgRhOXUEPr7IiBfYeacB9HaBNRvQH4f6\u002BlgMERwGxJP7grEoq9shj9Uz\u002BVGpmIi4vXcwdzlcePgzLAuZPiSGw869Jg\u002Biw1Mvw50oLGcuoh71y8h1HwB1Js8UfFLnwScNnBhdYVLWsy1IwK5XM5GHaw9uu0LeSCMddZA32lz7zjOQxMcByK1SPU3O/Rjnai2fkjNz8/5L77TyQJ/AJc67LNf3QeWAAAAAElFTkSuQmCC",
+              "WhenOpened": "2024-09-01T15:49:14.862Z",
               "EditorCaption": ""
             },
             {
@@ -73,10 +53,47 @@
               "RelativeDocumentMoniker": "Configuration_Form.cs",
               "ToolTip": "C:\\Users\\hasan\\Desktop\\ROV_TF\\ROV_UI\\Configuration_Form.cs",
               "RelativeToolTip": "Configuration_Form.cs",
-              "ViewState": "AgIAAOMAAAAAAAAAAAD4v+gAAAAZAAAAAAAAAA==",
+              "ViewState": "AgIAAGsAAAAAAAAAAAAWwIYAAABkAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-08-17T11:53:39.646Z",
+              "WhenOpened": "2024-08-31T17:20:05.777Z",
               "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Configuration_Form.cs [Tasar\u0131m]",
+              "DocumentMoniker": "C:\\Users\\hasan\\Desktop\\ROV_TF\\ROV_UI\\Configuration_Form.cs",
+              "RelativeDocumentMoniker": "Configuration_Form.cs",
+              "ToolTip": "C:\\Users\\hasan\\Desktop\\ROV_TF\\ROV_UI\\Configuration_Form.cs [Tasar\u0131m]",
+              "RelativeToolTip": "Configuration_Form.cs [Tasar\u0131m]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-08-31T17:18:17.184Z",
+              "EditorCaption": " [Tasar\u0131m]"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Main.cs",
+              "DocumentMoniker": "C:\\Users\\hasan\\Desktop\\ROV_TF\\ROV_UI\\Main.cs",
+              "RelativeDocumentMoniker": "Main.cs",
+              "ToolTip": "C:\\Users\\hasan\\Desktop\\ROV_TF\\ROV_UI\\Main.cs",
+              "RelativeToolTip": "Main.cs",
+              "ViewState": "AgIAAFwAAAAAAAAAAAAWwGcAAABNAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-08-29T23:44:52.932Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Main.cs [Tasar\u0131m]",
+              "DocumentMoniker": "C:\\Users\\hasan\\Desktop\\ROV_TF\\ROV_UI\\Main.cs",
+              "RelativeDocumentMoniker": "Main.cs",
+              "ToolTip": "C:\\Users\\hasan\\Desktop\\ROV_TF\\ROV_UI\\Main.cs [Tasar\u0131m]",
+              "RelativeToolTip": "Main.cs [Tasar\u0131m]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-08-29T23:28:11.794Z",
+              "EditorCaption": " [Tasar\u0131m]"
             }
           ]
         }
