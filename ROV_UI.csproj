@@ -147,6 +147,7 @@
   <ItemGroup>
     <None Include="Motor_Testi\Test_Gonder.py" />
     <None Include="Motor_Testi\TestMotor.py" />
+    <None Include="images\rederror_bw.png" />
     <Content Include="MYS_Logooicon.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

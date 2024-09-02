@@ -5,6 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Reflection.Emit;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -26,15 +27,23 @@ namespace ROV_UI
         public SftpClient RaspiSFTPClient = null;
         public ShellStream shellStream = null;
         public string currentProcessId;
-
+        private BackgroundWorker _backgroundWorker;
         public Configuration_Form Konfigurasyon_Formu;
         public textbox_form yol_degis;
-        public string raspi_dosya_yolu;
+        public string raspi_dosya_yolu_Gonder;
+        public string raspi_dosya_yolu_Al;
         public TextBox EvrenselTerminal;
-        
+
+        public bool devamlilik_Sensor = false;
+
         public Main()
         {
             InitializeComponent();
+
+            _backgroundWorker = new BackgroundWorker();
+            _backgroundWorker.WorkerSupportsCancellation = true; // İptal desteği sağla
+            _backgroundWorker.DoWork += BackgroundWorker_DoWork;
+            _backgroundWorker.RunWorkerCompleted += BackgroundWorker_RunWorkerCompleted;
 
             string dosya_dizini = AppDomain.CurrentDomain.BaseDirectory.ToString() + "rov_log/login.txt";
 
@@ -60,13 +69,13 @@ namespace ROV_UI
                 string login_String = File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + "rov_log/dosya_dizin.txt");
                 string[] log_Split = login_String.Split('&');
                 if (log_Split.Length > 1)
-                    raspi_dosya_yolu = log_Split[1];
+                    raspi_dosya_yolu_Gonder = log_Split[1];
                 else
                 {
                     string dosya_yolu = AppDomain.CurrentDomain.BaseDirectory + "rov_log/dosya_dizin.txt";
                     var ab = File.Create(dosya_yolu);
                     ab.Close();
-                    File.WriteAllText(dosya_yolu, raspi_dosya_yolu);
+                    File.WriteAllText(dosya_yolu, raspi_dosya_yolu_Gonder);
                 }
             }
             else
@@ -74,7 +83,7 @@ namespace ROV_UI
                 string dosya_yolu = AppDomain.CurrentDomain.BaseDirectory + "rov_log/dosya_dizin.txt";
                 var ab = File.Create(dosya_yolu);
                 ab.Close();
-                File.WriteAllText(dosya_yolu, raspi_dosya_yolu);
+                File.WriteAllText(dosya_yolu, raspi_dosya_yolu_Gonder);
             }
             EvrenselTerminal = terminal;
 
@@ -106,17 +115,20 @@ namespace ROV_UI
                     shellStream = RaspiSSHClient.CreateShellStream("xterm", 80, 24, 800, 600, 1024);
 
                     var cmd = RaspiSSHClient.CreateCommand("echo -n $HOME/Desktop");
-                    var result = cmd.Execute();                    
-                    raspi_dosya_yolu = result;
+                    var result = cmd.Execute();
+                    raspi_dosya_yolu_Gonder = result;
+                    raspi_dosya_yolu_Al = result;
                     string dosya_yolu = AppDomain.CurrentDomain.BaseDirectory + "rov_log/dosya_dizin.txt";
-                    File.WriteAllText(dosya_yolu, "&" + raspi_dosya_yolu);
+                    File.WriteAllText(dosya_yolu, "&" + raspi_dosya_yolu_Gonder);
 
                     pictureBox2.Image = global::ROV_UI.Properties.Resources.greentick;
                     desktop_listesi.Enabled = true;
                     dosya_gonder.Enabled = true;
                     baglantiyi_kes.Enabled = true;
                     komutu_calistir.Enabled = true;
+                    alincak.Enabled = true;
                     baglan.Enabled = false;
+                    SicaklikOku.Enabled = true;
                     Dosya_Yolu_Degistir.Enabled = true;
                 }
                 else
@@ -151,7 +163,9 @@ namespace ROV_UI
             dosya_gonder.Enabled = false;
             baglantiyi_kes.Enabled = false;
             komutu_calistir.Enabled=false;
+            alincak.Enabled = false;
             baglan.Enabled = true;
+            SicaklikOku.Enabled = false;
             Dosya_Yolu_Degistir.Enabled = false;
         }
 
@@ -170,8 +184,8 @@ namespace ROV_UI
                     {
                         using (FileStream fs = new FileStream(file, FileMode.Open))
                         {
-                            RaspiSFTPClient.ChangeDirectory(raspi_dosya_yolu);RaspiSFTPClient.UploadFile(fs, Path.GetFileName(file));
-                            terminal.Text += file + " dosyası;" + Environment.NewLine + raspi_dosya_yolu + " adresine yüklendi" + Environment.NewLine;
+                            RaspiSFTPClient.ChangeDirectory(raspi_dosya_yolu_Gonder);RaspiSFTPClient.UploadFile(fs, Path.GetFileName(file));
+                            terminal.Text += file + " dosyası;" + Environment.NewLine + raspi_dosya_yolu_Gonder + " adresine yüklendi" + Environment.NewLine;
                         }
                     }
                 }
@@ -190,53 +204,56 @@ namespace ROV_UI
 
         private void komutu_calistir_Click(object sender, EventArgs e)
         {
-            if (komut_satiri.Text.EndsWith(" & echo $!"))
-            {
-                shellStream.WriteLine(komut_satiri.Text);
+            if (komut_satiri.Text.EndsWith(".py*") || komut_satiri.Text.EndsWith(".py & echo $!*"))
+            {                
+                if (komut_satiri.Text.EndsWith(" & echo $!*"))
+                {
+                    shellStream.WriteLine(komut_satiri.Text.Substring(0, komut_satiri.Text.Length - 1));
+                }
+                else
+                {
+                    shellStream.WriteLine(komut_satiri.Text.Substring(0, komut_satiri.Text.Length - 1) + " & echo $!");
+                }
+                string output;
+                Match match;
+
+                while (true)
+                {
+                    output = shellStream.ReadLine() + "\n";
+                    match = Regex.Match(output, @"%(\d+)%");
+                    if (match.Success)
+                    {
+                        EvrenselTerminal.AppendText("islem kodu" + match.Groups[1].Value + Environment.NewLine);
+                        currentProcessId = match.Groups[1].Value;
+                        break;
+                    }
+                }
+
+                islemi_Durdur.Enabled = true;
+                komutu_calistir.Enabled = false;
             }
             else
             {
-                shellStream.WriteLine(komut_satiri.Text + " & echo $!");
+                shellStream.WriteLine(komut_satiri.Text);
             }
-
-            string output;
-            Match match;
-
-            while (true)
-            {
-                output = shellStream.ReadLine() + "\n";
-                match = Regex.Match(output, @"%(\d+)%");
-                if (match.Success)
-                {
-                    EvrenselTerminal.AppendText("islem kodu" + match.Groups[1].Value + Environment.NewLine);
-                    currentProcessId = match.Groups[1].Value;
-                    break;
-                }
-            }
-
-            islemi_Durdur.Enabled = true;
-            komutu_calistir.Enabled = false;
         }
         private async void shell_Baglan()
         {
             string output;
             await Task.Run(() =>
             {
-                while (RaspiSSHClient.IsConnected)
+                while (RaspiSSHClient != null)
                 {
                     output = shellStream.ReadLine() + "\n";
-                    while (true)
+                    if (!string.IsNullOrEmpty(output))
                     {
-                        output = shellStream.ReadLine() + "\n";
-                        if (!string.IsNullOrEmpty(output))
+                        Invoke(new Action(() =>
                         {
-                            Invoke(new Action(() =>
-                            {
-                                EvrenselTerminal.AppendText(output + Environment.NewLine);
-                            }));
-                        }
+                            EvrenselTerminal.AppendText(output + Environment.NewLine);
+                            if (output == "%bitti%") { islemi_Durdur.Enabled = false; komutu_calistir.Enabled = true; }
+                        }));
                     }
-                }                
+                }
             });
         }
         
@@ -272,27 +289,115 @@ namespace ROV_UI
 
         private void dosya_yolu_degistir_Click(object sender, EventArgs e)
         {
-            yol_degis = new textbox_form(raspi_dosya_yolu, this);
+            yol_degis = new textbox_form(this, "gonder", raspi_dosya_yolu_Gonder);
             yol_degis.ShowDialog();
         }
 
-        public void bilgi_geri_al(string _dosya_yolu)
+        public void bilgi_geri_al(string _dosya_yolu, string tag)
         {
-            raspi_dosya_yolu = _dosya_yolu;
+            if (tag == "al")
+            {
+                raspi_dosya_yolu_Al = _dosya_yolu;
+                //string dosya_yolu = AppDomain.CurrentDomain.BaseDirectory + "rov_log/dosya_dizin.txt";
+                //var ab = File.Create(dosya_yolu);
+                //ab.Close();
+                //string deger = "&" + raspi_dosya_yolu_Gonder;
+                //File.WriteAllText(dosya_yolu, deger);
+                yol_degis.Close();
+            }
 
-            string dosya_yolu = AppDomain.CurrentDomain.BaseDirectory + "rov_log/dosya_dizin.txt";
-            var ab = File.Create(dosya_yolu);
-            ab.Close();
-            string deger = "&" + raspi_dosya_yolu;
-            File.WriteAllText(dosya_yolu, deger);
+            if (tag == "gonder")
+            {
+                raspi_dosya_yolu_Gonder = _dosya_yolu;
+                string dosya_yolu = AppDomain.CurrentDomain.BaseDirectory + "rov_log/dosya_dizin.txt";
+                var ab = File.Create(dosya_yolu);
+                ab.Close();
+                string deger = "&" + raspi_dosya_yolu_Gonder;
+                File.WriteAllText(dosya_yolu, deger);
+                yol_degis.Close();
+            }
 
-            yol_degis.Close();
+        }
+
+        private void dosya_al(object sender, EventArgs e)
+        {
+            yol_degis = new textbox_form(this, "al", raspi_dosya_yolu_Al);
+            yol_degis.ShowDialog();
         }
 
         private void desktop_listesi_Click(object sender, EventArgs e)
         {
-            var commandResult = RaspiSSHClient.RunCommand("ls /home/raspberrypi/Desktop");
-            terminal.Text += Convert.ToString(commandResult.Result) + Environment.NewLine;
+            try
+            {
+                using (var file = File.Create(AppDomain.CurrentDomain.BaseDirectory + "rov_log/" + Path.GetFileName(raspi_dosya_yolu_Al)))
+                {
+                    RaspiSFTPClient.DownloadFile(raspi_dosya_yolu_Al, file);
+                }
+                EvrenselTerminal.AppendText(Environment.NewLine + raspi_dosya_yolu_Al + Environment.NewLine + "Adresinden dosya başarı ile alındı ve " + Environment.NewLine + (AppDomain.CurrentDomain.BaseDirectory + "rov_log/" + Path.GetFileName(raspi_dosya_yolu_Al)) + Environment.NewLine + "Adresine kaydedildi " + Environment.NewLine);
+            }
+            catch(Exception ex) { MessageBox.Show(ex.Message); }            
+        }
+        /*
+        private void sicaklik_okur()
+        {
+            while (devamlilik_Sensor)
+            {
+                var cmd = RaspiSSHClient.CreateCommand("vcgencmd measure_temp | sed \"s/temp=//;s/'C//\" | tr -d '\\n'");
+                label8.Text = "Raspberry Pi " + cmd.Execute() + " °C";
+                Thread.Sleep(1000);
+            }            
+        }
+        */
+        private void BackgroundWorker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            BackgroundWorker worker = sender as BackgroundWorker;
+
+            while (!worker.CancellationPending)
+            {
+                // Uzun süren işleminiz burada
+                var cmd = RaspiSSHClient.CreateCommand("vcgencmd measure_temp | sed \"s/temp=//;s/'C//\" | tr -d '\\n'");
+                UpdateLabel("Raspberry Pi " + cmd.Execute() + " °C");
+                Thread.Sleep(1000); // Örnek: her saniye bir işlem yap
+
+                // İşlemin ilerlemesini kontrol edebilir veya bir log atabilirsiniz
+            }
+
+            // İptal edildiğinde, metod burada tamamlanacak
+        }
+
+        private void BackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            SicaklikOku.ForeColor = Color.Black;
+            devamlilik_Sensor = false;
+        }
+
+        private void SicaklikOku_Click(object sender, EventArgs e)
+        {            
+            Button button = sender as Button;
+            if (devamlilik_Sensor)
+            {
+                _backgroundWorker.CancelAsync();
+                button.ForeColor = Color.Black;
+                devamlilik_Sensor = false;
+                label8.Text = "Raspberry Pi °C";
+            }
+            else
+            {
+                button.ForeColor = Color.Green;
+                devamlilik_Sensor = true;
+                _backgroundWorker.RunWorkerAsync();
+            }            
+        }
+        private void UpdateLabel(string text)
+        {
+            if (label8.InvokeRequired)
+            {
+                label8.Invoke(new MethodInvoker(() => label8.Text = text));
+            }
+            else
+            {
+                label8.Text = text;
+            }
         }
     }
 }

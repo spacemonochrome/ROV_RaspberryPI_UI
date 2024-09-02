@@ -102,7 +102,7 @@ namespace ROV_UI
             {
                 try
                 {
-                    AnaEkran.RaspiSFTPClient.UploadFile(memoryStream, AnaEkran.raspi_dosya_yolu + "/Test_Gonder.py");
+                    AnaEkran.RaspiSFTPClient.UploadFile(memoryStream, AnaEkran.raspi_dosya_yolu_Gonder + "/Test_Gonder.py");
                 }
                 catch (Exception ex)
                 {
@@ -120,7 +120,7 @@ namespace ROV_UI
                 File.WriteAllText(tempFilePath, textToAdd, Encoding.UTF8);
                 using (FileStream fs = new FileStream(tempFilePath, FileMode.Open))
                 {
-                    AnaEkran.RaspiSFTPClient.UploadFile(fs, AnaEkran.raspi_dosya_yolu + "/TestMotor.py");
+                    AnaEkran.RaspiSFTPClient.UploadFile(fs, AnaEkran.raspi_dosya_yolu_Gonder + "/TestMotor.py");
                 }
                 File.Delete(tempFilePath);
             }
@@ -132,7 +132,7 @@ namespace ROV_UI
 
             try
             {
-                AnaEkran.shellStream.WriteLine("python " + AnaEkran.raspi_dosya_yolu + "/Test_Gonder.py");
+                AnaEkran.shellStream.WriteLine("python " + AnaEkran.raspi_dosya_yolu_Gonder + "/Test_Gonder.py");
             }
             catch (Exception ex)
             {
@@ -203,9 +203,9 @@ namespace ROV_UI
                     {
                         using (FileStream fs = new FileStream(file, FileMode.Open))
                         {
-                            AnaEkran.RaspiSFTPClient.ChangeDirectory(AnaEkran.raspi_dosya_yolu);
+                            AnaEkran.RaspiSFTPClient.ChangeDirectory(AnaEkran.raspi_dosya_yolu_Gonder);
                             AnaEkran.RaspiSFTPClient.UploadFile(fs, Path.GetFileName(file));
-                            AnaEkran.EvrenselTerminal.Text += file + " dosyası;" + Environment.NewLine + AnaEkran.raspi_dosya_yolu + " adresine yüklendi" + Environment.NewLine; 
+                            AnaEkran.EvrenselTerminal.Text += file + " dosyası;" + Environment.NewLine + AnaEkran.raspi_dosya_yolu_Gonder + " adresine yüklendi" + Environment.NewLine; 
                         }
                     }
                 }

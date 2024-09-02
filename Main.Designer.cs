@@ -59,10 +59,12 @@
             this.pictureBox9 = new System.Windows.Forms.PictureBox();
             this.pictureBox10 = new System.Windows.Forms.PictureBox();
             this.Dosya_Yolu_Degistir = new System.Windows.Forms.Button();
-            this.label8 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
             this.label10 = new System.Windows.Forms.Label();
             this.islemi_Durdur = new System.Windows.Forms.Button();
+            this.alincak = new System.Windows.Forms.Button();
+            this.SicaklikOku = new System.Windows.Forms.Button();
+            this.label8 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
@@ -104,7 +106,7 @@
             this.desktop_listesi.Name = "desktop_listesi";
             this.desktop_listesi.Size = new System.Drawing.Size(90, 41);
             this.desktop_listesi.TabIndex = 0;
-            this.desktop_listesi.Text = "Desktop Listesi";
+            this.desktop_listesi.Text = "Dosya Al";
             this.desktop_listesi.UseVisualStyleBackColor = true;
             this.desktop_listesi.Click += new System.EventHandler(this.desktop_listesi_Click);
             // 
@@ -380,16 +382,6 @@
             this.Dosya_Yolu_Degistir.UseVisualStyleBackColor = true;
             this.Dosya_Yolu_Degistir.Click += new System.EventHandler(this.dosya_yolu_degistir_Click);
             // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
-            this.label8.Location = new System.Drawing.Point(15, 245);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(106, 16);
-            this.label8.TabIndex = 1;
-            this.label8.Text = "Raspberry Pi °C";
-            // 
             // label9
             // 
             this.label9.AutoSize = true;
@@ -404,7 +396,7 @@
             // 
             this.label10.AutoSize = true;
             this.label10.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
-            this.label10.Location = new System.Drawing.Point(15, 305);
+            this.label10.Location = new System.Drawing.Point(15, 245);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(53, 16);
             this.label10.TabIndex = 1;
@@ -422,12 +414,49 @@
             this.islemi_Durdur.UseVisualStyleBackColor = true;
             this.islemi_Durdur.Click += new System.EventHandler(this.islemi_durdur);
             // 
+            // alincak
+            // 
+            this.alincak.Enabled = false;
+            this.alincak.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
+            this.alincak.Location = new System.Drawing.Point(108, 93);
+            this.alincak.Name = "alincak";
+            this.alincak.Size = new System.Drawing.Size(28, 41);
+            this.alincak.TabIndex = 0;
+            this.alincak.Text = "//";
+            this.alincak.UseVisualStyleBackColor = true;
+            this.alincak.Click += new System.EventHandler(this.dosya_al);
+            // 
+            // SicaklikOku
+            // 
+            this.SicaklikOku.BackColor = System.Drawing.Color.Transparent;
+            this.SicaklikOku.Enabled = false;
+            this.SicaklikOku.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Bold);
+            this.SicaklikOku.Location = new System.Drawing.Point(92, 234);
+            this.SicaklikOku.Name = "SicaklikOku";
+            this.SicaklikOku.Size = new System.Drawing.Size(44, 49);
+            this.SicaklikOku.TabIndex = 8;
+            this.SicaklikOku.Text = "°C Oku";
+            this.SicaklikOku.UseVisualStyleBackColor = false;
+            this.SicaklikOku.Click += new System.EventHandler(this.SicaklikOku_Click);
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
+            this.label8.Location = new System.Drawing.Point(15, 305);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(106, 16);
+            this.label8.TabIndex = 9;
+            this.label8.Text = "Raspberry Pi °C";
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(869, 457);
+            this.Controls.Add(this.label8);
+            this.Controls.Add(this.SicaklikOku);
             this.Controls.Add(this.pictureBox10);
             this.Controls.Add(this.pictureBox7);
             this.Controls.Add(this.pictureBox9);
@@ -445,7 +474,6 @@
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label10);
             this.Controls.Add(this.label9);
-            this.Controls.Add(this.label8);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.label6);
@@ -456,6 +484,7 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.config_button);
             this.Controls.Add(this.islemi_Durdur);
+            this.Controls.Add(this.alincak);
             this.Controls.Add(this.Dosya_Yolu_Degistir);
             this.Controls.Add(this.dosya_gonder);
             this.Controls.Add(this.desktop_listesi);
@@ -515,10 +544,12 @@
         private System.Windows.Forms.PictureBox pictureBox9;
         private System.Windows.Forms.PictureBox pictureBox10;
         private System.Windows.Forms.Button Dosya_Yolu_Degistir;
-        private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.Button islemi_Durdur;
+        private System.Windows.Forms.Button alincak;
+        private System.Windows.Forms.Button SicaklikOku;
+        private System.Windows.Forms.Label label8;
     }
 }
 
