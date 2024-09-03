@@ -73,12 +73,10 @@ namespace ROV_UI
 
             if (AnaEkran.RaspiSSHClient != null)
             {
-                Log_Gonder.Enabled = true;
                 Test_Buton.Enabled = true;
             }
             else
             {
-                Log_Gonder.Enabled = false;
                 Test_Buton.Enabled = false;
             }
         }
@@ -191,24 +189,13 @@ namespace ROV_UI
         private void Button_Log_Gonder(object sender, EventArgs e)
         {
             try
-            {
-                OpenFileDialog dialog = new OpenFileDialog();
-                dialog.Multiselect = true;
-                dialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-                dialog.RestoreDirectory = true;
-                dialog.Multiselect = true;
-                if (dialog.ShowDialog() == DialogResult.OK)
-                {
-                    foreach (String file in dialog.FileNames)
-                    {
-                        using (FileStream fs = new FileStream(file, FileMode.Open))
-                        {
-                            AnaEkran.RaspiSFTPClient.ChangeDirectory(AnaEkran.raspi_dosya_yolu_Gonder);
-                            AnaEkran.RaspiSFTPClient.UploadFile(fs, Path.GetFileName(file));
-                            AnaEkran.EvrenselTerminal.Text += file + " dosyası;" + Environment.NewLine + AnaEkran.raspi_dosya_yolu_Gonder + " adresine yüklendi" + Environment.NewLine; 
-                        }
-                    }
-                }
+            {                
+                string Gonderilecek = AppDomain.CurrentDomain.BaseDirectory + "rov_log/Motor_Conf.txt";
+                FileStream fs = new FileStream(Gonderilecek, FileMode.Open);
+                AnaEkran.RaspiSFTPClient.ChangeDirectory(AnaEkran.raspi_dosya_yolu_Gonder);
+                AnaEkran.RaspiSFTPClient.UploadFile(fs, Path.GetFileName(Gonderilecek));
+                AnaEkran.EvrenselTerminal.Text += Gonderilecek + " dosyası;" + Environment.NewLine + AnaEkran.raspi_dosya_yolu_Gonder + " adresine yüklendi" + Environment.NewLine;
+                MessageBox.Show("Dosya Gonderildi");
             }
             catch (Exception ex)
             {
@@ -257,6 +244,7 @@ namespace ROV_UI
 
         private void Button_Log_Kaydet(object sender, EventArgs e)
         {
+            Log_Gonder.Enabled = true;
             string ilksatir = "";
             for (int i = 0; i < motorKonum.Length; i++)
             {

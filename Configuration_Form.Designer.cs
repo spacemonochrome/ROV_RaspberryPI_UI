@@ -394,6 +394,7 @@
             // 
             // Log_Gonder
             // 
+            this.Log_Gonder.Enabled = false;
             this.Log_Gonder.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
             this.Log_Gonder.Location = new System.Drawing.Point(12, 375);
             this.Log_Gonder.Name = "Log_Gonder";

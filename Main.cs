@@ -184,7 +184,8 @@ namespace ROV_UI
                     {
                         using (FileStream fs = new FileStream(file, FileMode.Open))
                         {
-                            RaspiSFTPClient.ChangeDirectory(raspi_dosya_yolu_Gonder);RaspiSFTPClient.UploadFile(fs, Path.GetFileName(file));
+                            RaspiSFTPClient.ChangeDirectory(raspi_dosya_yolu_Gonder);
+                            RaspiSFTPClient.UploadFile(fs, Path.GetFileName(file));
                             terminal.Text += file + " dosyası;" + Environment.NewLine + raspi_dosya_yolu_Gonder + " adresine yüklendi" + Environment.NewLine;
                         }
                     }
